@@ -376,10 +376,20 @@ svg {
   background: var(--bg-alt);
   border: 1px solid var(--border);
   padding: 8px 12px;
+  padding-right: 38px; /* space for arrow */
   border-radius: 8px;
   font-family: inherit;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position: calc(100% - 22px) 55%, calc(100% - 14px) 55%;
+  background-size: 7px 7px, 7px 7px;
+  background-repeat: no-repeat;
+  font-size: 0.85rem;
 }
 .select:focus {
   outline: 2px solid var(--primary-accent);
@@ -495,6 +505,8 @@ svg {
   cursor: pointer;
   font-family: inherit;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 0.8rem;
 }
 .btn-secondary:hover {
   background: var(--primary-accent);
@@ -630,11 +642,22 @@ textarea:focus,
 
 @media (max-width: 480px) {
   .toolbar-row {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .toolbar-row > *:not(.theme-toggle) {
-    width: 100%;
+  .toolbar-row .search-bar {
+    flex: 1 1 100%;
+  }
+  .toolbar-row .toggle-archived {
+    flex: 1 1 100%;
+    order: 2;
+  }
+  .toolbar-row .select {
+    flex: 1 1 calc(50% - 5px);
+    min-width: 140px;
+  }
+  .theme-toggle {
+    order: 3;
   }
   .toolbar-row .btn-secondary,
   .toolbar-row select {
