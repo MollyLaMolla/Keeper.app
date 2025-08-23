@@ -1,8 +1,9 @@
 import React from "react";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import { useI18n } from "../i18n";
+import ThemeToggle from "./ThemeToggle";
 
-function Header({ primaryColor = "#ff7a18" }) {
+function Header({ primaryColor = "#ff7a18", darkMode, onToggleDark }) {
   const { lang, setLang } = useI18n();
   const next = lang === "en" ? "it" : "en";
   return (
@@ -12,6 +13,7 @@ function Header({ primaryColor = "#ff7a18" }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        padding: "14px 28px",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -22,29 +24,31 @@ function Header({ primaryColor = "#ff7a18" }) {
           <span>Keeper</span>
         </h1>
       </div>
-      <button
-        onClick={() => {
-          setLang(next);
-          localStorage.setItem("keeper.lang", next);
-        }}
-        style={{
-          background: "#ffffff22",
-          border: "1px solid #ffffff55",
-          color: "#fff",
-          padding: "6px 14px",
-          borderRadius: 24,
-          cursor: "pointer",
-          fontWeight: 600,
-          letterSpacing: ".5px",
-        }}
-        title={
-          lang === "en"
-            ? "Cambia lingua in Italiano"
-            : "Switch language to English"
-        }
+      <div
+        className="header-actions"
+        style={{ display: "flex", alignItems: "center", gap: 12 }}
       >
-        {lang.toUpperCase()}
-      </button>
+        <button
+          onClick={() => {
+            setLang(next);
+            localStorage.setItem("keeper.lang", next);
+          }}
+          className="header-btn lang-btn"
+          title={
+            lang === "en"
+              ? "Cambia lingua in Italiano"
+              : "Switch language to English"
+          }
+        >
+          {lang.toUpperCase()}
+        </button>
+        <div
+          className="header-theme-toggle"
+          title={darkMode ? "Light" : "Dark"}
+        >
+          <ThemeToggle value={darkMode} onChange={onToggleDark} />
+        </div>
+      </div>
     </header>
   );
 }

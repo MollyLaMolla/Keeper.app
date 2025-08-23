@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Dropdown from "./Dropdown";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import SearchBar from "./SearchBar";
-import ThemeToggle from "./ThemeToggle";
 import { I18nContext, translate, useI18n } from "../i18n";
 
 // Local storage key constant
@@ -133,6 +133,9 @@ function App() {
     );
     clearSelection();
   };
+  const selectAll = () => {
+    setSelected(new Set(filteredNotes.map((n) => n.id)));
+  };
   const bulkDelete = () => {
     if (!selected.size) return;
     if (!window.confirm(t("confirmDeleteSelected"))) return;
@@ -171,9 +174,22 @@ function App() {
     setNotes((prev) => prev.filter((n) => !n.archived));
   };
 
+  const restoreArchived = () => {
+    if (!stats.archived) return;
+    setNotes((prev) =>
+      prev.map((n) =>
+        n.archived ? { ...n, archived: false, updatedAt: Date.now() } : n
+      )
+    );
+  };
+
   return (
     <div className={darkMode ? "app app-dark" : "app"}>
-      <Header primaryColor="#ff7a18" />
+      <Header
+        primaryColor="#ff7a18"
+        darkMode={darkMode}
+        onToggleDark={setDarkMode}
+      />
       <div className="toolbar">
         <CreateArea onAdd={addNote} primaryColor="#ff7a18" />
         <div className="toolbar-row">
@@ -193,31 +209,43 @@ function App() {
               ? t("hideArchived")
               : t("showArchivedWithCount", { count: stats.archived })}
           </button>
-          <select
-            className="select"
+          <Dropdown
             value={tagFilter}
-            onChange={(e) => setTagFilter(e.target.value)}
-          >
-            <option value="">{t("allTags")}</option>
-            {allTags.map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-          <select
-            className="select"
+            onChange={setTagFilter}
+            options={[
+              { value: "", label: t("allTags") },
+              ...allTags.map((tg) => ({ value: tg, label: tg })),
+            ]}
+            className="toolbar-dropdown"
+            placeholder={t("allTags")}
+          />
+          <Dropdown
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
-          >
-            <option value="created-desc">{t("newest")}</option>
-            <option value="created-asc">{t("oldest")}</option>
-            <option value="title-asc">{t("titleAZ")}</option>
-            <option value="title-desc">{t("titleZA")}</option>
-          </select>
-          <ThemeToggle value={darkMode} onChange={setDarkMode} />
+            onChange={setSort}
+            options={[
+              { value: "created-desc", label: t("newest") },
+              { value: "created-asc", label: t("oldest") },
+              { value: "title-asc", label: t("titleAZ") },
+              { value: "title-desc", label: t("titleZA") },
+            ]}
+            className="toolbar-dropdown"
+          />
         </div>
         {selected.size > 0 && (
           <div className="bulk-bar">
             <span>{t("selectedCount", { count: selected.size })}</span>
+            <button
+              className="btn-secondary"
+              onClick={
+                selected.size === filteredNotes.length
+                  ? clearSelection
+                  : selectAll
+              }
+            >
+              {selected.size === filteredNotes.length
+                ? t("deselectAll")
+                : t("selectAll")}
+            </button>
             <button className="btn-secondary" onClick={() => bulkArchive(true)}>
               {t("archive")}
             </button>
@@ -237,6 +265,9 @@ function App() {
         )}
         {showArchived && stats.archived > 0 && (
           <div className="bulk-bar" style={{ marginTop: 10 }}>
+            <button className="btn-secondary" onClick={restoreArchived}>
+              {t("restoreArchiveWithCount", { count: stats.archived })}
+            </button>
             <button className="btn-danger" onClick={clearArchived}>
               {t("emptyArchiveWithCount", { count: stats.archived })}
             </button>
