@@ -79,6 +79,12 @@ header h1 {
   background: #ffffff28;
   box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.45) inset;
 }
+
+.header-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .header-theme-toggle .theme-toggle {
   background: #ffffff22;
   border: 1px solid #ffffff44;
@@ -103,7 +109,7 @@ header h1 {
   align-items: center;
   justify-content: center;
   width: 46px;
-  height: 34px; /* match header button height */
+  height: 100%; /* match header button height */
   background: #ffffff22;
   border: 1px solid #ffffff44;
   color: #fff;
@@ -120,9 +126,9 @@ header h1 {
 }
 .header-actions .header-btn,
 .header-actions .theme-toggle-btn {
-  height: 34px;
-  line-height: 1;
+  height: 35px;
 }
+
 .theme-toggle-btn:hover {
   background: #ffffff33;
   border-color: #ffffff66;
