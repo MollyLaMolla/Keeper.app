@@ -1,6 +1,4 @@
 //2. Create a App.jsx component.
-
-import React from "react";
 import Note from "./Note";
 import Header from "./Header";
 import Footer from "./Footer";

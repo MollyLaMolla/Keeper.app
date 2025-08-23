@@ -2,7 +2,6 @@
 //to show the Keeper App name in an <h1>.
 
 import { IoMdFlashlight } from "react-icons/io";
-import React from "react";
 
 function Header() {
   return (
