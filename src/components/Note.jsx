@@ -88,13 +88,24 @@ function Note({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showColorPicker]);
 
+  // derive a softer translucent accent (simple alpha suffix if 6-digit hex)
+  const accentSoft =
+    scheme.accent.length === 7
+      ? `${scheme.accent}33`
+      : scheme.accent.slice(0, 7) + "33";
+
   return (
     <div
-      className={"note" + (archived ? " note-archived" : "")}
+      className={
+        "note" +
+        (archived ? " note-archived" : "") +
+        (isEditing ? " note-editing" : "")
+      }
       style={{
         background: scheme.bg,
         color: scheme.text,
         "--accent": scheme.accent,
+        "--accent-soft": accentSoft,
       }}
       data-accent={scheme.accent}
       data-archived-label={t("archivedBadge")}
@@ -135,16 +146,57 @@ function Note({
             onChange={(e) => setDraftContent(e.target.value)}
             rows={4}
           />
-          <button
-            ref={colorBtnRef}
-            className="btn subtle"
-            style={{ color: scheme.accent, borderColor: scheme.accent }}
-            onClick={() => setShowColorPicker((s) => !s)}
-            aria-haspopup="true"
-            aria-expanded={showColorPicker}
-          >
-            {t("color")}
-          </button>
+          <div className="note-color-wrapper">
+            <button
+              ref={colorBtnRef}
+              className="note-color-btn"
+              onClick={() => setShowColorPicker((s) => !s)}
+              aria-haspopup="true"
+              aria-expanded={showColorPicker}
+              aria-controls={`color-pop-${id}`}
+            >
+              {t("color")}
+            </button>
+            {isEditing && showColorPicker && (
+              <div
+                id={`color-pop-${id}`}
+                ref={pickerRef}
+                className="color-pop note-color-pop"
+                role="dialog"
+                aria-label={t("color")}
+                style={{
+                  position: "absolute",
+                  top: -10,
+                  left: 0,
+                  zIndex: 100,
+                  transform: "translateY(-100%)",
+                }}
+              >
+                {colorOptions.map((c) => {
+                  const isActive = c === currentColor;
+                  return (
+                    <button
+                      key={c}
+                      aria-label={c}
+                      className={`color-pop-swatch${isActive ? " active" : ""}`}
+                      style={{
+                        background:
+                          c === "black" ? palette[c].bg : palette[c].accent,
+                        boxShadow: isActive
+                          ? `0 0 0 3px #fff inset, 0 0 0 3px ${
+                              c === "black"
+                                ? "#ffffff55"
+                                : palette[c].accent + "55"
+                            }`
+                          : undefined,
+                      }}
+                      onClick={() => handleColorChange(c)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -210,29 +262,6 @@ function Note({
           <DeleteIcon fontSize="small" />
         </Button>
       </Stack>
-      {isEditing && showColorPicker && (
-        <div
-          ref={pickerRef}
-          className="color-pop"
-          style={{ position: "absolute", top: 10, right: 10 }}
-        >
-          {colorOptions.map((c) => (
-            <button
-              key={c}
-              aria-label={c}
-              className={`swatch${c === currentColor ? " active" : ""}`}
-              style={{
-                background: c === "black" ? palette[c].bg : palette[c].accent,
-                border:
-                  c === currentColor
-                    ? "2px solid #00000044"
-                    : "2px solid transparent",
-              }}
-              onClick={() => handleColorChange(c)}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
