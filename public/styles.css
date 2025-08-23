@@ -628,6 +628,52 @@ textarea:focus,
   }
 }
 
+@media (max-width: 480px) {
+  .toolbar-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar-row > *:not(.theme-toggle) {
+    width: 100%;
+  }
+  .toolbar-row .btn-secondary,
+  .toolbar-row select {
+    justify-content: center;
+  }
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  form.create-note {
+    padding: 14px 14px 22px;
+  }
+  .bulk-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .bulk-bar > * {
+    width: 100%;
+    text-align: center;
+  }
+  .stats {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .note {
+    padding: 12px 14px;
+  }
+  .note-edit-content {
+    min-height: 110px;
+  }
+  .color-pop {
+    grid-template-columns: repeat(5, 28px);
+    gap: 8px;
+  }
+  .color-pop-swatch {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Dark theme toolbar & bulk bar contrast improvements */
 body.dark .toolbar,
 body.dark .bulk-bar {
